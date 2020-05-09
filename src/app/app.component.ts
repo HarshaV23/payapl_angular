@@ -1,61 +1,13 @@
-import { Component,AfterViewChecked} from '@angular/core';
-declare let paypal: any;
+import { Component} from '@angular/core';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements AfterViewChecked {
+export class AppComponent  {
 
-  addScript: boolean = false;
-  paypalLoad: boolean = true;
-  response:any;
-  profile:Object;
-  
-  finalAmount: number = 1;
  
-  paypalConfig = {
-    env: 'sandbox',
-    client: {
-      sandbox: '',//paste the client id here
-      //production: '<your-production-key here>'
-    },
-    commit: true,
-    payment: (data, actions) => {
-      return actions.payment.create({
-        payment: {
-          transactions: [
-            { amount: { total: this.finalAmount, currency: 'INR' } }
-          ]
-        }
-      });
-    },
-    onAuthorize: (data, actions) => {
-      return actions.payment.execute().then((payment) => {
-        this.response=payment;
-        console.log(payment);
-      })
-    }
-  };
- 
-  ngAfterViewChecked(): void {
-    if (!this.addScript) {
-      this.addPaypalScript().then(() => {
-        paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
-        this.paypalLoad = false;
-      })
-    }
-  }
-  
-  addPaypalScript() {
-    this.addScript = true;
-    return new Promise((resolve, reject) => {
-      let scripttagElement = document.createElement('script');    
-      scripttagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
-      scripttagElement.onload = resolve;
-      document.body.appendChild(scripttagElement);
-    })
-  }
 
 
   
